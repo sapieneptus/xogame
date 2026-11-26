@@ -1,0 +1,24 @@
+; Voice recording studio for Game Maker. Separate from games so games never use the microphone.
+
+config_version=5
+
+[application]
+
+config/name="Voice Studio"
+run/main_scene="res://studio.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[audio]
+
+driver/enable_input=true
+
+[display]
+
+window/size/viewport_width=1100
+window/size/viewport_height=680
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"

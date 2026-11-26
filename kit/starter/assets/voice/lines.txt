@@ -1,0 +1,10 @@
+# Voice lines for this game. One per line:  id | what to say | how to say it
+# The recording studio reads this list. The game plays assets/voice/<id>.wav.
+red | Red! | bright and happy
+orange | Orange! | bright and happy
+yellow | Yellow! | bright and happy
+green | Green! | bright and happy
+blue | Blue! | bright and happy
+purple | Purple! | bright and happy
+pink | Pink! | bright and happy
+well_done | Well done! You did it! | big, proud, cheering

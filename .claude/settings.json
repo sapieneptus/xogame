@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(kit/tools/get-godot.sh:*)",
+      "Bash(kit/tools/new-game.sh:*)",
+      "Bash(kit/tools/sync-kit.sh:*)",
+      "Bash(kit/tools/import.sh:*)",
+      "Bash(kit/tools/test.sh:*)",
+      "Bash(kit/tools/play.sh:*)",
+      "Bash(kit/tools/studio.sh:*)",
+      "Bash(kit/tools/checkpoint.sh:*)",
+      "Bash(kit/tools/undo.sh:*)",
+      "Bash(kit/tools/update.sh:*)",
+      "Bash(kit/tools/make-sounds.sh:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git show:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(rm -rf:*)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  }
+}

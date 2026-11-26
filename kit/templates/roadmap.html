@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- Claude: fill this from ROADMAP.md. Keep it simple; replace the example items. -->
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GAME NAME roadmap</title>
+<style>
+:root{--bg:#fdf8f0;--card:#fff;--ink:#2b2b3a;--muted:#6b6b80;--now:#3a86ff;--later:#9b5de5;--no:#b0b0bd;--done:#3bc14a}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1f2b;--card:#282b3a;--ink:#ecebf5;--muted:#a3a3b8}}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 system-ui,sans-serif}
+main{max-width:900px;margin:0 auto;padding:32px 16px}
+h1{margin:0 0 4px}p.sub{color:var(--muted);margin:0 0 28px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+section{background:var(--card);border-radius:16px;padding:18px 20px;border-top:6px solid var(--later)}
+section.now{border-color:var(--now)}section.no{border-color:var(--no)}
+h2{font-size:20px;margin:0 0 10px}ul{margin:0;padding-left:20px}li{margin:6px 0}
+li.done{color:var(--done)}li.done::marker{content:"✓  "}
+</style></head><body><main>
+<h1>GAME NAME</h1><p class="sub">What we're making now, next, and later.</p>
+<div class="cols">
+<section class="now"><h2>Version 1 · now</h2><ul><li class="done">Example finished feature</li><li>Example feature</li></ul></section>
+<section><h2>Version 2</h2><ul><li>Example idea</li></ul></section>
+<section><h2>Version 3</h2><ul><li>Example idea</li></ul></section>
+<section class="no"><h2>Not doing</h2><ul><li>Example - why</li></ul></section>
+</div></main></body></html>

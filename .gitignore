@@ -1,0 +1,13 @@
+# Downloaded programs (Godot) - re-downloaded by kit/tools/get-godot.sh
+.tools/
+# Godot's working files
+.godot/
+**/.godot/
+# Test screenshots and logs
+.test-output/
+# Exported builds
+build/
+*.apk
+*.aab
+# Personal Claude settings
+.claude/settings.local.json
