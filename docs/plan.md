@@ -4,7 +4,7 @@ A GitHub template repo that lets a non-coder build a simple game with Claude (or
 
 First real user and first test: Chris's wife, building a game for their kids.
 
-Status: planning. Nothing here is validated yet. Section 9 lists what must be proven first.
+Status: M0 in progress. Kit v0.1.0 built; spike 2 and the update flow pass in a Linux container. Nothing tested on her Windows laptop or with the kids yet. See section 12 for decisions and results.
 
 ---
 
@@ -35,55 +35,44 @@ Design consequence: the process, not the code, is the product. Every step must b
 6. Root `CLAUDE.md` stays tiny. Detail lives in skills and the playbook, loaded only when needed.
 7. No data collection from children. No accounts, analytics or network calls in games by default.
 
-## 3. Repo layout (v0)
+## 3. Repo layout (v0.1, as built)
+
+One clone per game. Paths are either kit-owned (replaced on update) or game-owned (never touched by updates); that split is what makes updates conflict-free.
 
 ```
-game-maker/
-├── README.md          human-facing, 3 steps, no jargon
-├── CLAUDE.md          tiny router (below)
-├── plan.md            this file (delete or move to docs/ in the template)
-├── STATE.md           phase, next action, last session summary
-├── GAME.md            vision + v1 acceptance criteria (written by wizard)
-├── ROADMAP.md         v1, v2, v3 + "not doing" list
-├── roadmap.html       generated visual of ROADMAP.md
-├── feasibility.md     green / yellow / red tiers
-├── .claude/skills/
-│   ├── start/         wizard: discover, feasibility, scope, roadmap, scaffold, first local run
-│   ├── continue/      resume from STATE.md, do one feature
-│   ├── playtest/      generate plain-language playtest checklist
-│   ├── undo/          revert to last checkpoint
-│   └── wrap-up/       checkpoint, update state, tell user to start fresh session
-└── playbooks/godot-web/
-    ├── PLAYBOOK.md    opinionated dev loop for this stack
-    ├── starter/       minimal working Godot project (to be added)
-    └── ship.md        build an Android APK and sideload it onto the tablet (later step)
+xogame/                       (kit repo; each game is a clone of it)
+├── README.md                 kit  human-facing setup + "things you can say"
+├── CLAUDE.md                 kit  tiny router
+├── .claude/settings.json     kit  permission allowlist (kit scripts, read-only git) + deny list
+├── .claude/skills/           kit  start, continue, playtest, undo, wrap-up, update, voices
+├── docs/                     kit  plan.md (this), DEVELOPING.md
+├── kit/
+│   ├── VERSION, UPSTREAM, CHANGELOG.md   update metadata ("Game impact" per release)
+│   ├── feasibility.md        green / yellow / red
+│   ├── playbooks/godot/      PLAYBOOK.md (dev loop + designing for ages 2-5), ship-android.md (stub)
+│   ├── templates/            STATE.md, GAME.md, ROADMAP.md, roadmap.html
+│   ├── gamekit/              Godot add-on copied into every game (Kit autoload, KitShape,
+│   │                         KitMascot, confetti, test runner, sound generator, CC0 sounds)
+│   ├── starter/              "Pop!" toy, copied once into game/ by new-game.sh
+│   ├── studio/               Voice Studio (separate Godot app; games never touch the mic)
+│   └── tools/                get-godot, new-game, test, play, studio, checkpoint, undo, update, ...
+├── game/                     game  created by the start wizard (game/addons/gamekit = synced copy)
+├── STATE.md, GAME.md, ROADMAP.md, roadmap.html   game  created by the start wizard
+└── .tools/                   ignored  pinned Godot download
 ```
-
-### Root CLAUDE.md (router logic)
-
-- If `STATE.md` has `phase: new`, run `/start`.
-- Otherwise read `STATE.md`, say in one sentence where things stand, propose the next step, follow the playbook named in `STATE.md`.
-- Never ask the user to read or edit code. Explain any technical term the first time it is used.
-- Never take a red-tier feature into v1.
 
 ### STATE.md schema
 
 ```
-phase: new | scoping | building | shipping | maintaining
-playbook: godot-web
+phase: scoping | building | shipping | maintaining     (no file = new: run start)
+playbook: godot
 version_in_progress: v1
 current_feature: <name or none>
 next_action: <one sentence>
-last_checkpoint: <commit hash or tag>
+last_checkpoint: <save-N tag>
 last_session_summary: <3 sentences max>
 open_questions_for_user: <list>
 ```
-
-### Feasibility tiers (starter list, to refine)
-
-- Green: single-player 2D, tap/click/drag, simple scoring, fixed levels, simple sounds, kids' puzzle/matching/drawing games.
-- Yellow: installing on the kids' tablet as an APK (one-time setup needed), saving progress locally, many levels, custom art pipelines, voice/speech, animations at scale, physics-heavy play. Allowed in v2+, with a stated cost.
-- Red: multiplayer, accounts/login, in-app purchases, ads, app store publishing, user-generated content sharing, anything collecting data from children. Not in v1; offer the nearest simple alternative.
 
 ## 4. Session protocol
 
@@ -202,3 +191,28 @@ Success metric for M0: a first playable running on her computer in under 30 minu
 - Claude Code + Godot write-ups: https://dev.to/abagames/godot-is-well-suited-for-game-development-with-ai-coding-agents-2lcm, https://thebrandonwu.substack.com/p/building-a-visual-novel-with-claude
 
 Note: findings come from blogs, READMEs and docs summaries, not hands-on testing. Treat the herdr capability claims as hypotheses until spike 5.
+
+## 12. Decisions and results log
+
+### 2026-11-26: decisions
+- Her computer is Windows; kids' tablets are Amazon Fire. Claude Code runs locally (desktop app or CLI) so it can open the game on her screen; Claude Code on the web can't. On Windows, Claude Code uses Git Bash, so the kit's tools are bash scripts that run on Windows, macOS and Linux.
+- Godot confirmed as the first playbook, pinned to 4.7.2 (newest stable today), downloaded into `.tools/` by a script (no installer, no admin rights). Renderer: GL Compatibility (old laptops, Fire tablets).
+- Kid-mode reality: a game can ignore Esc, the close button and Alt+F4, and does. It cannot block the Windows key or Alt+Tab. The grown-up exit is holding Ctrl+Shift+Q for 2 s. Supervised play plus a one-click relaunch is the realistic target; OS-level kiosk modes (Windows Assigned Access, Fire screen pinning / Amazon Kids) are a later option.
+- First win before the wizard: the starter is already a toy for ages 2-4. Start = install, launch the toy (~10 min), then scope.
+- Kid appeal (from LittleBeans and Lucas games): nice sounds, a sense of reward, responsiveness, mascots. Built into the starter and playbook: pentatonic notes so mashing sounds musical, star progress plus a celebration every 10 inputs, a mascot that reacts to every input.
+- Assets: sounds generated by maths in a Godot script (CC0 by construction, needs nothing but Godot); shapes and mascot drawn in code; voice lines recorded by her in the Voice Studio (auto trim and level). ElevenLabs deliberately avoided.
+- Updates: games are `git clone`s (shared history). `kit/tools/update.sh` checkpoints, merges upstream, resolves conflicts by path ownership (kit paths take upstream, game paths keep local), re-syncs gamekit and prints the changelog. Also works for repos made with "Use this template" (unrelated histories).
+- Checkpoints are `save-N` git tags; undo restores files from a tag as a new commit (history kept, so undo is undoable).
+
+### 2026-11-26: results (Linux cloud container, Xvfb virtual display)
+- Spike 2 (Claude tests the game itself): PASS. The runner simulates taps, keys, drags and toddler mashing, checks facts, and saves screenshots. Planted bugs: off-by-one celebration (caught), typo in a function name (caught at import), null crash in celebration (caught), shape drawn behind background (caught), shape in the wrong place (caught), shape colour made fully transparent with its shadow still drawn (not caught by checks; visible in screenshots). Hence the playbook rule that Claude must look at every screenshot.
+- Update flow (`kit/tools/dev-test-update.sh`): 12/12. Conflicting edit to a kit file resolved to upstream, game change kept, gamekit refreshed, locally added skill kept, checks pass after update, undo of an update works, template-made repo updates.
+- Repeated syncs/tests leave a game's git status clean (Godot .uid/.import files ship with the kit).
+- Voice Studio: audio clean-up tested with a synthetic recording; UI renders. Real microphone NOT tested.
+- NOT yet tested anywhere: Windows (Git Bash paths, Godot console build, unzip fallback, mic permission prompt), the `.claude/settings.json` allowlist in a real Claude Code session, kids actually playing, the start wizard with her, APK/Fire.
+
+### Next
+1. Spike 1 on her laptop: setup from README, `play.sh`, kids play the toy. Log every confusion.
+2. Spike 4: wizard dry run with her on a real idea.
+3. Spike 3: cold resume over several sessions.
+4. Spike 1b (APK on a Fire tablet).
